@@ -1,0 +1,7 @@
+history.md
+vault.out.txt
+memory-bank
+vault_pubkey.asc
+start.sh
+tools/ps-to-pdf/data/
+tools/vault-gpg-unseal/gnupg/
