@@ -50,6 +50,12 @@ This collection uses a `Makefile` to simplify running the tools. Each tool has i
         *   `make authentik-gen-key`: Generate and print the key to standard output.
         *   `make authentik-shell`: Open an interactive shell in the tool's Nix environment (provides `openssl`).
 
+*   **Htpasswd Hash Generation (`htpasswd-hash`)**
+    *   Purpose: Generates a bcrypt hash for a given password using `htpasswd`. The output is suitable for use in htpasswd files and has the username and colon prefix removed.
+    *   Requires: No specific setup required.
+    *   Commands:
+        *   `make htpasswd-hash`: Run the tool and you will be prompted to enter the password interactively. The hash will be printed to the terminal.
+
 ### Running a Tool
 
 1.  **Run a specific tool:**
@@ -89,6 +95,8 @@ This collection uses a `Makefile` to simplify running the tools. Each tool has i
         *   `data/`: Directory created by user for input `.ps` and output `.pdf` files (ignored by git).
     *   `tools/authentik-gen-key/`: Contains the Authentik secret key generation tool.
         *   `generate.sh`: The core script for key generation.
+    *   `tools/htpasswd-hash/`: Contains the htpasswd hash generation tool.
+        *   `generate_hash.sh`: The core script for hash generation.
 *   `.gitignore`: Prevents sensitive/generated directories (`tools/vault-gpg-unseal/gnupg/`, `tools/ps-to-pdf/data/`) and other specified files (`memory-bank`, `history.md`, `vault.out.txt`) from being committed.
 *   `memory-bank/`: Contains project documentation for Cline (ignored by git).
 *   `README.md`: This file.

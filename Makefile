@@ -80,3 +80,17 @@ authentik-shell: ## Open a shell in the Authentik key generation environment
 	@echo "--- Entering Authentik Key Generation Shell ---"
 	# Use common opts, override entrypoint
 	@docker run $(DOCKER_RUN_OPTS) --entrypoint nix-shell $(NIX_IMAGE) -p openssl
+
+# --- Htpasswd Hash Generation ---
+HTPASSWD_TOOL_DIR := tools/htpasswd-hash
+HTPASSWD_SCRIPT_NAME := generate_hash.sh
+HTPASSWD_SCRIPT_PATH := /tools/$(HTPASSWD_TOOL_DIR)/$(HTPASSWD_SCRIPT_NAME) # Absolute path in container, but script is called relatively from -w
+
+.PHONY: htpasswd-hash
+htpasswd-hash: ## Generate a bcrypt hash for a password using htpasswd. You will be prompted for input.
+	@echo "--- Generating htpasswd hash ---"
+	@docker run $(DOCKER_RUN_OPTS) \
+		-w /tools/htpasswd-hash \
+		$(NIX_IMAGE) \
+		nix-shell -p apacheHttpd coreutils --run "./$(HTPASSWD_SCRIPT_NAME)"
+	@echo "--- htpasswd hash generation complete ---"
