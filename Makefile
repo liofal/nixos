@@ -54,6 +54,18 @@ vault-shell:
 	@docker run $(DOCKER_RUN_OPTS) $(VAULT_GPG_MOUNT) $(NIX_IMAGE) \
 		nix-shell -p gnupg coreutils pinentry-curses
 
+# --- GPG Key Initialization ---
+GPG_INIT_TOOL_DIR := gpg-init
+GPG_INIT_SCRIPT_NAME := init.sh
+GPG_INIT_SCRIPT_PATH := /tools/$(GPG_INIT_TOOL_DIR)/$(GPG_INIT_SCRIPT_NAME)
+
+## gpg-init: Initialize GPG keys for Vault Raft server key encryption.
+.PHONY: gpg-init
+gpg-init:
+	@echo "Starting GPG key initialization..."
+	@docker run $(DOCKER_RUN_OPTS) $(VAULT_GPG_MOUNT) $(NIX_IMAGE) \
+		nix-shell -p gnupg coreutils pinentry-curses --run "$(GPG_INIT_SCRIPT_PATH)"
+
 ## ps-to-pdf: Convert PostScript files in tools/ps-to-pdf/data/ to PDF.
 .PHONY: ps-to-pdf
 ps-to-pdf:
@@ -64,7 +76,7 @@ ps-to-pdf:
 		nix-shell -p ghostscript --run /tools/ps-to-pdf/convert.sh
 
 # --- Authentik Key Generation ---
-AUTHENTIK_TOOL_DIR := tools/authentik-gen-key
+AUTHENTIK_TOOL_DIR := authentik-gen-key
 AUTHENTIK_SCRIPT_NAME := generate.sh # Just the script name
 AUTHENTIK_SCRIPT_PATH := /tools/$(AUTHENTIK_TOOL_DIR)/$(AUTHENTIK_SCRIPT_NAME) # Absolute path in container
 

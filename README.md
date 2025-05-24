@@ -37,6 +37,13 @@ This collection uses a `Makefile` to simplify running the tools. Each tool has i
         *   `make vault-decrypt`: Run the decryption interactively.
         *   `make vault-shell`: Open an interactive shell in the tool's Nix environment.
 
+*   **GPG Key Initialization (`gpg-init`)**
+    *   Purpose: Generates a new GPG key pair and initializes the `tools/vault-gpg-unseal/gnupg/` directory with the necessary GPG files (private key, public key, trustdb). This prepares the environment for the `vault-decrypt` and `vault-shell` tools. It also exports the armored public key for use in encrypting Vault keys.
+    *   Requires: No specific setup required, as it creates the keys.
+    *   Commands:
+        *   `make gpg-init`: Run the interactive key generation process. You will be prompted for user details and a passphrase.
+    *   Output: Populates `tools/vault-gpg-unseal/gnupg/` and exports the armored public key to `tools/vault-gpg-unseal/vault_encrypt_pubkey.asc`.
+
 *   **PostScript to PDF (`ps-to-pdf`)**
     *   Purpose: Converts all `.ps` files found in `tools/ps-to-pdf/data/` to `.pdf` files in the same directory.
     *   Requires: User must create the `tools/ps-to-pdf/data/` directory and place input `.ps` files there.
@@ -86,17 +93,19 @@ This collection uses a `Makefile` to simplify running the tools. Each tool has i
 
 *   `Makefile`: Provides simple commands (`make <tool-target>`) to run utilities.
 *   `tools/`: Contains the individual utility scripts and resources.
-    *   `tools/vault-gpg-unseal/`: Contains the Vault GPG decryption tool.
-        *   `unseal.sh`: The core script for decryption.
-        *   `examples/`: Contains example GPG key files.
-        *   `gnupg/`: Directory created by user to hold necessary GPG keys (ignored by git).
-    *   `tools/ps-to-pdf/`: Contains the PostScript to PDF conversion tool.
-        *   `convert.sh`: The core script for conversion.
-        *   `data/`: Directory created by user for input `.ps` and output `.pdf` files (ignored by git).
-    *   `tools/authentik-gen-key/`: Contains the Authentik secret key generation tool.
-        *   `generate.sh`: The core script for key generation.
-    *   `tools/htpasswd-hash/`: Contains the htpasswd hash generation tool.
-        *   `generate_hash.sh`: The core script for hash generation.
+*   `tools/vault-gpg-unseal/`: Contains the Vault GPG decryption tool.
+    *   `unseal.sh`: The core script for decryption.
+    *   `examples/`: Contains example GPG key files.
+    *   `gnupg/`: Directory created by user to hold necessary GPG keys (ignored by git).
+*   `tools/gpg-init/`: Contains the GPG key initialization tool.
+    *   `init.sh`: The core script for GPG key generation and export.
+*   `tools/ps-to-pdf/`: Contains the PostScript to PDF conversion tool.
+    *   `convert.sh`: The core script for conversion.
+    *   `data/`: Directory created by user for input `.ps` and output `.pdf` files (ignored by git).
+*   `tools/authentik-gen-key/`: Contains the Authentik secret key generation tool.
+    *   `generate.sh`: The core script for key generation.
+*   `tools/htpasswd-hash/`: Contains the htpasswd hash generation tool.
+    *   `generate_hash.sh`: The core script for hash generation.
 *   `.gitignore`: Prevents sensitive/generated directories (`tools/vault-gpg-unseal/gnupg/`, `tools/ps-to-pdf/data/`) and other specified files (`memory-bank`, `history.md`, `vault.out.txt`) from being committed.
 *   `memory-bank/`: Contains project documentation for Cline (ignored by git).
 *   `README.md`: This file.
