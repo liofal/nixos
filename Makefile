@@ -28,6 +28,9 @@ check_gnupg = $(if $(wildcard tools/vault-gpg-unseal/gnupg/*),,$(error Error: ./
 # Check if ps-to-pdf data directory exists
 check_ps_data = $(if $(wildcard tools/ps-to-pdf/data/*),,$(error Error: ./tools/ps-to-pdf/data directory is empty or does not exist. Please create it and place your .ps files inside. See README.md))
 
+# Check if docx-to-pdf data directory exists
+check_docx_data = $(if $(wildcard tools/docx-to-pdf/data/*),,$(error Error: ./tools/docx-to-pdf/data directory is empty or does not exist. Please create it and place your .docx files inside. See README.md))
+
 ## help: Show available tool targets
 .PHONY: help
 help:
@@ -106,3 +109,11 @@ htpasswd-hash: ## Generate a bcrypt hash for a password using htpasswd. You will
 		$(NIX_IMAGE) \
 		nix-shell -p apacheHttpd coreutils --run "./$(HTPASSWD_SCRIPT_NAME)"
 	@echo "--- htpasswd hash generation complete ---"
+
+.PHONY: docx-to-pdf
+docx-to-pdf: ## Convert DOCX files in tools/docx-to-pdf/data/ to PDF.
+	$(call check_docx_data)
+	@echo "Starting DOCX to PDF conversion..."
+	# Use common opts, override working directory
+	@docker run $(DOCKER_RUN_OPTS) -w /tools/docx-to-pdf $(NIX_IMAGE) \
+		nix-shell -p libreoffice --run /tools/docx-to-pdf/convert.sh

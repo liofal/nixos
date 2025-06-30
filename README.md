@@ -17,6 +17,7 @@ Often, command-line tasks require specific dependencies or a controlled environm
         *   Ensure permissions on copied files are secure (e.g., `chmod 600` for private keys).
         *   This directory (`tools/vault-gpg-unseal/gnupg/`) is included in `.gitignore`.
     *   **For `ps-to-pdf`:** Create `tools/ps-to-pdf/data/` and place your input `.ps` files inside. This directory is also ignored by git.
+    *   **For `docx-to-pdf`:** Create `tools/docx-to-pdf/data/` and place your input `.docx` files inside. This directory is also ignored by git.
 
 ## Setup
 
@@ -63,6 +64,12 @@ This collection uses a `Makefile` to simplify running the tools. Each tool has i
     *   Commands:
         *   `make htpasswd-hash`: Run the tool and you will be prompted to enter the password interactively. The hash will be printed to the terminal.
 
+*   **DOCX to PDF Conversion (`docx-to-pdf`)**
+    *   Purpose: Converts all `.docx` files found in `tools/docx-to-pdf/data/` to `.pdf` files in the same directory using LibreOffice.
+    *   Requires: User must create the `tools/docx-to-pdf/data/` directory and place input `.docx` files there.
+    *   Commands:
+        *   `make docx-to-pdf`: Run the conversion process.
+
 ### Running a Tool
 
 1.  **Run a specific tool:**
@@ -106,6 +113,9 @@ This collection uses a `Makefile` to simplify running the tools. Each tool has i
     *   `generate.sh`: The core script for key generation.
 *   `tools/htpasswd-hash/`: Contains the htpasswd hash generation tool.
     *   `generate_hash.sh`: The core script for hash generation.
-*   `.gitignore`: Prevents sensitive/generated directories (`tools/vault-gpg-unseal/gnupg/`, `tools/ps-to-pdf/data/`) and other specified files (`memory-bank`, `history.md`, `vault.out.txt`) from being committed.
+*   `tools/docx-to-pdf/`: Contains the DOCX to PDF conversion tool.
+    *   `convert.sh`: The core script for conversion.
+    *   `data/`: Directory created by user for input `.docx` and output `.pdf` files (ignored by git).
+*   `.gitignore`: Prevents sensitive/generated directories (`tools/vault-gpg-unseal/gnupg/`, `tools/ps-to-pdf/data/`, `tools/docx-to-pdf/data/`) and other specified files (`memory-bank`, `history.md`, `vault.out.txt`) from being committed.
 *   `memory-bank/`: Contains project documentation for Cline (ignored by git).
 *   `README.md`: This file.
