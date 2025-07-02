@@ -12,37 +12,43 @@ if [[ ! -d "$DATA_DIR" ]]; then
   exit 1
 fi
 
-# Find DOCX files
-docx_files=$(find "$DATA_DIR" -maxdepth 1 -name '*.docx' -print)
+# Find Word files (both .docx and .doc)
+word_files=$(find "$DATA_DIR" -maxdepth 1 \( -name '*.docx' -o -name '*.doc' \) -print)
 
-if [[ -z "$docx_files" ]]; then
-  echo "No .docx files found in '$DATA_DIR'."
+if [[ -z "$word_files" ]]; then
+  echo "No .doc or .docx files found in '$DATA_DIR'."
   exit 0
 fi
 
-echo "Found DOCX files to convert:"
-echo "$docx_files"
+echo "Found Word files to convert:"
+echo "$word_files"
 echo "---"
 
 # Convert each file
 file_count=0
 error_count=0
-while IFS= read -r docx_file; do
+while IFS= read -r word_file; do
   file_count=$((file_count + 1))
-  echo "Converting '$docx_file' to PDF..."
+  echo "Converting '$word_file' to PDF..."
   
   # Use LibreOffice headless mode to convert to PDF
   # --convert-to pdf: Convert to PDF format
   # --outdir: Specify output directory (same as input directory)
-  if libreoffice --headless --convert-to pdf --outdir "$DATA_DIR" "$docx_file"; then
-    pdf_file="$DATA_DIR/$(basename "$docx_file" .docx).pdf"
-    echo "Successfully converted '$docx_file' to '$pdf_file'."
+  if libreoffice --headless --convert-to pdf --outdir "$DATA_DIR" "$word_file"; then
+    # Determine the base name and construct the PDF file name
+    base_name=$(basename "$word_file")
+    if [[ "$base_name" == *.docx ]]; then
+      pdf_file="$DATA_DIR/${base_name%.docx}.pdf"
+    else
+      pdf_file="$DATA_DIR/${base_name%.doc}.pdf"
+    fi
+    echo "Successfully converted '$word_file' to '$pdf_file'."
   else
-    echo "Error: Failed to convert '$docx_file'." >&2
+    echo "Error: Failed to convert '$word_file'." >&2
     error_count=$((error_count + 1))
   fi
   echo "---"
-done <<< "$docx_files"
+done <<< "$word_files"
 
 echo "Conversion process finished."
 echo "Processed $file_count files."
