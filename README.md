@@ -70,6 +70,17 @@ This collection uses a `Makefile` to simplify running the tools. Each tool has i
     *   Commands:
         *   `make docx-to-pdf`: Run the conversion process.
 
+*   **YouTube Video Downloader (`yt-dlp`)**
+    *   Purpose: Downloads a video from a given URL using `yt-dlp`. Files will be saved to the local `downloads` directory.
+    *   Requires: No specific setup required.
+    *   Commands:
+        *   `make yt-dlp URL="<video-url>"`: Run the download process.
+    *   Example:
+        ```bash
+        make yt-dlp URL="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        ```
+    *   Output: The downloaded video will be saved in the `downloads/yt-dlp` directory.
+
 ### Running a Tool
 
 1.  **Run a specific tool:**
@@ -116,6 +127,9 @@ This collection uses a `Makefile` to simplify running the tools. Each tool has i
 *   `tools/docx-to-pdf/`: Contains the DOCX to PDF conversion tool.
     *   `convert.sh`: The core script for conversion.
     *   `data/`: Directory created by user for input `.docx` and output `.pdf` files (ignored by git).
+*   `tools/yt-dlp/`: Contains the YouTube video downloader tool.
+    *   `download.sh`: The core script for downloading videos.
+    *   `shell.nix`: The Nix shell environment providing `yt-dlp`.
 *   `.gitignore`: Prevents sensitive/generated directories (`tools/vault-gpg-unseal/gnupg/`, `tools/ps-to-pdf/data/`, `tools/docx-to-pdf/data/`) and other specified files (`memory-bank`, `history.md`, `vault.out.txt`) from being committed.
 *   `memory-bank/`: Contains project documentation for Cline (ignored by git).
 *   `README.md`: This file.

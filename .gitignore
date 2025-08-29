@@ -6,3 +6,4 @@ start.sh
 tools/ps-to-pdf/data/
 tools/docx-to-pdf/data/
 tools/vault-gpg-unseal/gnupg/
+downloads

@@ -15,6 +15,7 @@ DOCKER_RUN_OPTS := \
 	-it \
 	--rm \
 	-v $(PWD)/tools:/tools \
+	-v $(PWD)/downloads:/downloads \
 	-v $(HOME)/.kube:/root/.kube \
 	-v $(HOME)/.aws:/root/.aws \
 	-w /tools
@@ -101,7 +102,7 @@ HTPASSWD_TOOL_DIR := tools/htpasswd-hash
 HTPASSWD_SCRIPT_NAME := generate_hash.sh
 HTPASSWD_SCRIPT_PATH := /tools/$(HTPASSWD_TOOL_DIR)/$(HTPASSWD_SCRIPT_NAME) # Absolute path in container, but script is called relatively from -w
 
-.PHONY: htpasswd-hash
+.PHONY: htpasswd-hash yt-dlp
 htpasswd-hash: ## Generate a bcrypt hash for a password using htpasswd. You will be prompted for input.
 	@echo "--- Generating htpasswd hash ---"
 	@docker run $(DOCKER_RUN_OPTS) \
@@ -117,3 +118,16 @@ docx-to-pdf: ## Convert DOCX files in tools/docx-to-pdf/data/ to PDF.
 	# Use common opts, override working directory
 	@docker run $(DOCKER_RUN_OPTS) -w /tools/docx-to-pdf $(NIX_IMAGE) \
 		nix-shell -p libreoffice --run /tools/docx-to-pdf/convert.sh
+
+# --- YouTube Downloader ---
+URL_ARG := $(word 2,$(MAKECMDGOALS))
+yt-dlp: ## Download a YouTube video. Usage: make yt-dlp <url>
+	@if [ -z "$(URL_ARG)" ]; then \
+		echo "Usage: make yt-dlp <youtube_url>"; \
+		exit 1; \
+	fi
+	@echo "--- Downloading YouTube video ---"
+	@docker run $(DOCKER_RUN_OPTS) \
+		$(NIX_IMAGE) \
+		nix-shell -p yt-dlp ffmpeg --run "/tools/yt-dlp/download.sh $(URL_ARG)"
+	@echo "--- Download complete ---"
