@@ -32,6 +32,9 @@ check_ps_data = $(if $(wildcard tools/ps-to-pdf/data/*),,$(error Error: ./tools/
 # Check if docx-to-pdf data directory exists
 check_docx_data = $(if $(wildcard tools/docx-to-pdf/data/*),,$(error Error: ./tools/docx-to-pdf/data directory is empty or does not exist. Please create it and place your .docx files inside. See README.md))
 
+# Check if svg-to-png data directory exists
+check_svg_data = $(if $(wildcard tools/svg-to-png/data/*),,$(error Error: ./tools/svg-to-png/data directory is empty or does not exist. Please create it and place your .svg files inside. See README.md))
+
 ## help: Show available tool targets
 .PHONY: help
 help:
@@ -119,6 +122,14 @@ docx-to-pdf: ## Convert DOCX files in tools/docx-to-pdf/data/ to PDF.
 	@docker run $(DOCKER_RUN_OPTS) -w /tools/docx-to-pdf $(NIX_IMAGE) \
 		nix-shell -p libreoffice --run /tools/docx-to-pdf/convert.sh
 
+.PHONY: svg-to-png
+svg-to-png: ## Convert SVG files in tools/svg-to-png/data/ to PNG.
+	$(call check_svg_data)
+	@echo "Starting SVG to PNG conversion..."
+	# Use common opts, override working directory
+	@docker run $(DOCKER_RUN_OPTS) -w /tools/svg-to-png $(NIX_IMAGE) \
+		nix-shell -p inkscape --run /tools/svg-to-png/convert.sh
+
 # --- YouTube Downloader ---
 URL_ARG := $(word 2,$(MAKECMDGOALS))
 yt-dlp: ## Download a YouTube video. Usage: make yt-dlp <url>
@@ -131,3 +142,8 @@ yt-dlp: ## Download a YouTube video. Usage: make yt-dlp <url>
 		$(NIX_IMAGE) \
 		nix-shell -p yt-dlp ffmpeg --run "/tools/yt-dlp/download.sh $(URL_ARG)"
 	@echo "--- Download complete ---"
+
+
+# Catch-all for arguments passed to make, so they are not interpreted as targets
+%:
+	@:
