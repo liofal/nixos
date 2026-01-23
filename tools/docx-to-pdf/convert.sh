@@ -12,8 +12,8 @@ if [[ ! -d "$DATA_DIR" ]]; then
   exit 1
 fi
 
-# Find Word files (both .docx and .doc)
-word_files=$(find "$DATA_DIR" -maxdepth 1 \( -name '*.docx' -o -name '*.doc' \) -print)
+# Find Word files (both .docx and .doc, case-insensitive)
+word_files=$(find "$DATA_DIR" -maxdepth 1 \( -iname '*.docx' -o -iname '*.doc' \) -print)
 
 if [[ -z "$word_files" ]]; then
   echo "No .doc or .docx files found in '$DATA_DIR'."
