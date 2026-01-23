@@ -11,8 +11,8 @@ NIX_IMAGE := nixos/nix
 # Mount tools directory for script access
 # Mount common host configs if needed (adjust/remove as necessary)
 # Tool-specific mounts (like GPG) are added in the target commands
+INTERACTIVE_OPTS := -it
 DOCKER_RUN_OPTS := \
-	-it \
 	--rm \
 	-v $(PWD)/tools:/tools \
 	-v $(PWD)/downloads:/downloads \
@@ -50,7 +50,7 @@ vault-decrypt:
 	@echo "Starting Vault GPG decryption environment..."
 	@echo "Paste raw base64-encoded GPG key data below (one key per line)."
 	@echo "Press Ctrl+D when finished."
-	@docker run $(DOCKER_RUN_OPTS) $(VAULT_GPG_MOUNT) $(NIX_IMAGE) \
+	@docker run $(INTERACTIVE_OPTS) $(DOCKER_RUN_OPTS) $(VAULT_GPG_MOUNT) $(NIX_IMAGE) \
 		nix-shell -p gnupg coreutils pinentry-curses --run /tools/vault-gpg-unseal/unseal.sh
 
 ## vault-shell: Start an interactive shell for the Vault GPG tool environment.
@@ -58,7 +58,7 @@ vault-decrypt:
 vault-shell:
 	$(call check_gnupg)
 	@echo "Starting interactive shell in NixOS container (Vault GPG context)..."
-	@docker run $(DOCKER_RUN_OPTS) $(VAULT_GPG_MOUNT) $(NIX_IMAGE) \
+	@docker run $(INTERACTIVE_OPTS) $(DOCKER_RUN_OPTS) $(VAULT_GPG_MOUNT) $(NIX_IMAGE) \
 		nix-shell -p gnupg coreutils pinentry-curses
 
 # --- GPG Key Initialization ---
@@ -70,7 +70,7 @@ GPG_INIT_SCRIPT_PATH := /tools/$(GPG_INIT_TOOL_DIR)/$(GPG_INIT_SCRIPT_NAME)
 .PHONY: gpg-init
 gpg-init:
 	@echo "Starting GPG key initialization..."
-	@docker run $(DOCKER_RUN_OPTS) $(VAULT_GPG_MOUNT) $(NIX_IMAGE) \
+	@docker run $(INTERACTIVE_OPTS) $(DOCKER_RUN_OPTS) $(VAULT_GPG_MOUNT) $(NIX_IMAGE) \
 		nix-shell -p gnupg coreutils pinentry-curses --run "$(GPG_INIT_SCRIPT_PATH)"
 
 ## ps-to-pdf: Convert PostScript files in tools/ps-to-pdf/data/ to PDF.
@@ -91,14 +91,14 @@ AUTHENTIK_SCRIPT_PATH := /tools/$(AUTHENTIK_TOOL_DIR)/$(AUTHENTIK_SCRIPT_NAME) #
 authentik-gen-key: ## Generate an Authentik secret key using openssl
 	@echo "--- Running Authentik Key Generation ---"
 	# Use common opts
-	@docker run $(DOCKER_RUN_OPTS) $(NIX_IMAGE) \
+	@docker run $(INTERACTIVE_OPTS) $(DOCKER_RUN_OPTS) $(NIX_IMAGE) \
 		nix-shell -p openssl --run "$(AUTHENTIK_SCRIPT_PATH)"
 	@echo "--- Authentik Key Generation Complete ---"
 
 authentik-shell: ## Open a shell in the Authentik key generation environment
 	@echo "--- Entering Authentik Key Generation Shell ---"
 	# Use common opts, override entrypoint
-	@docker run $(DOCKER_RUN_OPTS) --entrypoint nix-shell $(NIX_IMAGE) -p openssl
+	@docker run $(INTERACTIVE_OPTS) $(DOCKER_RUN_OPTS) --entrypoint nix-shell $(NIX_IMAGE) -p openssl
 
 # --- Htpasswd Hash Generation ---
 HTPASSWD_TOOL_DIR := tools/htpasswd-hash
@@ -108,7 +108,7 @@ HTPASSWD_SCRIPT_PATH := /tools/$(HTPASSWD_TOOL_DIR)/$(HTPASSWD_SCRIPT_NAME) # Ab
 .PHONY: htpasswd-hash yt-dlp
 htpasswd-hash: ## Generate a bcrypt hash for a password using htpasswd. You will be prompted for input.
 	@echo "--- Generating htpasswd hash ---"
-	@docker run $(DOCKER_RUN_OPTS) \
+	@docker run $(INTERACTIVE_OPTS) $(DOCKER_RUN_OPTS) \
 		-w /tools/htpasswd-hash \
 		$(NIX_IMAGE) \
 		nix-shell -p apacheHttpd coreutils --run "./$(HTPASSWD_SCRIPT_NAME)"
