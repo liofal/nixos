@@ -19,6 +19,7 @@ Often, command-line tasks require specific dependencies or a controlled environm
     *   **For `ps-to-pdf`:** Create `tools/ps-to-pdf/data/` and place your input `.ps` files inside. This directory is also ignored by git.
     *   **For `docx-to-pdf`:** Create `tools/docx-to-pdf/data/` and place your input `.docx` files inside. This directory is also ignored by git.
     *   **For `svg-to-png`:** Create `tools/svg-to-png/data/` and place your input `.svg` files inside. This directory is also ignored by git.
+    *   **For `flv-to-mp4`:** Create `tools/flv-to-mp4/data/` and place your input `.flv` files inside. This directory is also ignored by git.
 
 ## Setup
 
@@ -76,6 +77,12 @@ This collection uses a `Makefile` to simplify running the tools. Each tool has i
     *   Requires: User must create the `tools/svg-to-png/data/` directory and place input `.svg` files there.
     *   Commands:
         *   `make svg-to-png`: Run the conversion process.
+
+*   **FLV to MP4 Conversion (`flv-to-mp4`)**
+    *   Purpose: Converts all `.flv` files found in `tools/flv-to-mp4/data/` to `.mp4` files in the same directory using FFmpeg.
+    *   Requires: User must create the `tools/flv-to-mp4/data/` directory and place input `.flv` files there.
+    *   Commands:
+        *   `make flv-to-mp4`: Run the conversion process.
 
 *   **YouTube Video Downloader (`yt-dlp`)**
     *   Purpose: Downloads a video from a given URL using `yt-dlp`. Files will be saved to the local `downloads` directory.
@@ -137,9 +144,12 @@ This collection uses a `Makefile` to simplify running the tools. Each tool has i
 *   `tools/svg-to-png/`: Contains the SVG to PNG conversion tool.
     *   `convert.sh`: The core script for conversion.
     *   `data/`: Directory created by user for input `.svg` and output `.png` files (ignored by git).
+*   `tools/flv-to-mp4/`: Contains the FLV to MP4 conversion tool.
+    *   `convert.sh`: The core script for conversion.
+    *   `data/`: Directory created by user for input `.flv` and output `.mp4` files (ignored by git).
 *   `tools/yt-dlp/`: Contains the YouTube video downloader tool.
     *   `download.sh`: The core script for downloading videos.
     *   `shell.nix`: The Nix shell environment providing `yt-dlp`.
-*   `.gitignore`: Prevents sensitive/generated directories (`tools/vault-gpg-unseal/gnupg/`, `tools/ps-to-pdf/data/`, `tools/docx-to-pdf/data/`, `tools/svg-to-png/data/`) and other specified files (`memory-bank`, `history.md`, `vault.out.txt`) from being committed.
+*   `.gitignore`: Prevents sensitive/generated directories (`tools/vault-gpg-unseal/gnupg/`, `tools/ps-to-pdf/data/`, `tools/docx-to-pdf/data/`, `tools/svg-to-png/data/`, `tools/flv-to-mp4/data/`) and other specified files (`memory-bank`, `history.md`, `vault.out.txt`) from being committed.
 *   `memory-bank/`: Contains project documentation for Cline (ignored by git).
 *   `README.md`: This file.

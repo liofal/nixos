@@ -35,13 +35,16 @@ check_docx_data = $(if $(wildcard tools/docx-to-pdf/data/*),,$(error Error: ./to
 # Check if svg-to-png data directory exists
 check_svg_data = $(if $(wildcard tools/svg-to-png/data/*),,$(error Error: ./tools/svg-to-png/data directory is empty or does not exist. Please create it and place your .svg files inside. See README.md))
 
+# Check if flv-to-mp4 data directory exists
+check_flv_data = $(if $(wildcard tools/flv-to-mp4/data/*),,$(error Error: ./tools/flv-to-mp4/data directory is empty or does not exist. Please create it and place your .flv files inside. See README.md))
+
 ## help: Show available tool targets
 .PHONY: help
 help:
 	@echo "Usage: make [target]"
 	@echo ""
 	@echo "Available Tool Targets:"
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST) | grep -v help
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST) | grep -v help
 
 ## vault-decrypt: Run the Vault GPG decryption script interactively. Paste base64 GPG keys, then Ctrl+D.
 .PHONY: vault-decrypt
@@ -129,6 +132,14 @@ svg-to-png: ## Convert SVG files in tools/svg-to-png/data/ to PNG.
 	# Use common opts, override working directory
 	@docker run $(DOCKER_RUN_OPTS) -w /tools/svg-to-png $(NIX_IMAGE) \
 		nix-shell -p inkscape --run /tools/svg-to-png/convert.sh
+
+.PHONY: flv-to-mp4
+flv-to-mp4: ## Convert FLV files in tools/flv-to-mp4/data/ to MP4.
+	$(call check_flv_data)
+	@echo "Starting FLV to MP4 conversion..."
+	# Use common opts, override working directory
+	@docker run $(DOCKER_RUN_OPTS) -w /tools/flv-to-mp4 $(NIX_IMAGE) \
+		nix-shell -p ffmpeg --run /tools/flv-to-mp4/convert.sh
 
 # --- YouTube Downloader ---
 URL_ARG := $(word 2,$(MAKECMDGOALS))

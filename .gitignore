@@ -1,3 +1,4 @@
+.DS_Store
 history.md
 vault.out.txt
 memory-bank
@@ -6,5 +7,6 @@ start.sh
 tools/ps-to-pdf/data/
 tools/docx-to-pdf/data/
 tools/svg-to-png/data/
+tools/flv-to-mp4/data/
 tools/vault-gpg-unseal/gnupg/
 downloads
