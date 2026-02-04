@@ -10,4 +10,7 @@ mkdir -p "$DOWNLOAD_DIR"
 
 # Use a unique filename template including the video ID to prevent overwrites
 # and specify the format to ensure a proper video file is downloaded.
-yt-dlp --format 'bestvideo+bestaudio/best' -o "$DOWNLOAD_DIR/%(title)s - [%(id)s].%(ext)s" "$1"
+# Added --extractor-args to bypass some bot detection
+yt-dlp --format 'bestvideo+bestaudio/best' \
+       --extractor-args "youtube:player_client=android,web" \
+       -o "$DOWNLOAD_DIR/%(title)s - [%(id)s].%(ext)s" "$1"
